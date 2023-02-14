@@ -1,13 +1,15 @@
-﻿ <div class="container">
-        <ul id="toDoItems" class="list-group align-self-sm-stretch mt-4">
-         @* <li class="list-group-item">
-            Mjölk
-            <button class="btn btn-danger">X</button>
-          </li>
-          <li class="list-group-item">Bananer<button class="btn btn-danger">X</button></li>*@
+﻿<div class="container">
+    <ul id="toDoItems" class="list-group align-self-sm-stretch mt-4">
+        @foreach(var item in ToDoItems)
+        {
+          <li class="list-group-item @(item.Completed ? "change" : "")">@item.Text<button class="btn btn-danger">X</button></li>
+        }
         </ul>
       </div>
 
 @code {
+
+    [Parameter]
+    public IEnumerable<Item> ToDoItems { get; set; } = new List<Item>();
 
 }

@@ -25,7 +25,8 @@ namespace ToDoBlazor.Services
                 },
                 new Item()
                 {
-                    Text = "Mjölk"
+                    Text = "Mjölk",
+                    Completed = true
                 },
                 new Item()
                 {
