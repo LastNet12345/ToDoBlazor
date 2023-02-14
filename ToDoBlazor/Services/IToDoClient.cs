@@ -1,4 +1,4 @@
-﻿using ToDoBlazor.Shared;
+﻿using ToDoBlazor.Shared.Entities;
 
 namespace ToDoBlazor.Services
 {

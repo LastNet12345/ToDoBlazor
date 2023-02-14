@@ -1,4 +1,4 @@
-﻿namespace ToDoBlazor.Shared
+﻿namespace ToDoBlazor.Shared.Entities
 {
     public class Item
     {
