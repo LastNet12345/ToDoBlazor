@@ -1,14 +1,25 @@
-﻿ <div class="border-bottom bg-white">
-        <form id="todoForm" class="py-4 container">
-          <div class="input-group input-group-lg">
-            <input type="text" class="form-control" id="todoInput" placeholder="Add todo..." autofocus>
+﻿@inject IToDoClient client
+
+<div class="border-bottom bg-white">
+    <form id="todoForm" class="py-4 container">
+        <div class="input-group input-group-lg">
+            <input @bind="title" @bind:event="oninput" @bind:after="AutoComplete" type="text" class="form-control" id="todoInput" placeholder="Add todo..." autofocus>
             <div class="input-group-append input-group-lg">
-              <button id="addItemBtn" class="btn btn-info">ADD</button>
+                <button id="addItemBtn" class="btn btn-info">ADD</button>
             </div>
-          </div>
-        </form>
-      </div>
+        </div>
+    </form>
+</div>
+
+<Items ToDoItems="items"></Items>
 
 @code {
+    private string title = string.Empty;
+    private IEnumerable<Item> items = new List<Item>();
+
+    private async Task AutoComplete()
+    {
+        items = (await client.GetAsync()).Where(i => i.Text.StartsWith(title)).ToList();
+    }
 
 }
