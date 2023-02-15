@@ -3,27 +3,26 @@
 <div class="border-bottom bg-white">
     <form id="todoForm" class="py-4 container">
         <div class="input-group input-group-lg">
-            <input @bind="Text" @bind:after="OnTextChanged" @bind:event="oninput" type="text" class="form-control" id="todoInput" placeholder="Add todo..." autofocus>
+            <input @bind="text" type="text" class="form-control" id="todoInput" placeholder="Add todo..." autofocus>
             <div class="input-group-append input-group-lg">
-                <button id="addItemBtn" class="btn btn-info">ADD</button>
+                <button @onclick="OnAddToDoItems" @onclick:preventDefault="true" id="addItemBtn" class="btn btn-info">ADD</button>
             </div>
         </div>
     </form>
 </div>
 
-<h1>@Text</h1>
+
 
 @code {
+    public string text  = string.Empty;
 
     [Parameter]
-    public string Text { get; set; } = string.Empty;
+    public EventCallback<string> AddToDoItems { get; set; }
 
-    [Parameter]
-    public EventCallback<string> TextChanged { get; set; }
-
-    public async Task OnTextChanged()
+    public async Task OnAddToDoItems()
     {
-        await TextChanged.InvokeAsync(Text);
+        await AddToDoItems.InvokeAsync(text);
+        text = string.Empty;
     }
 
 
