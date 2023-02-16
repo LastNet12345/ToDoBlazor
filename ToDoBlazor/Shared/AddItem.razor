@@ -1,14 +1,16 @@
 ﻿
 
 <div class="border-bottom bg-white">
-    <form id="todoForm" class="py-4 container">
+    <EditForm Model="createItem" OnValidSubmit="OnAddToDoItems" id="todoForm" class="py-4 container">
         <div class="input-group input-group-lg">
-            <input @bind="createItem.Text" type="text" class="form-control" id="todoInput" placeholder="Add todo..." autofocus>
+            <InputText @bind-Value="createItem.Text" type="text" class="form-control" id="todoInput" placeholder="Add todo..." autofocus></InputText>
             <div class="input-group-append input-group-lg">
-                <button @onclick="OnAddToDoItems" @onclick:preventDefault="true" id="addItemBtn" class="btn btn-info">ADD</button>
+                <button type="submit" id="addItemBtn" class="btn btn-info">ADD</button>
             </div>
         </div>
-    </form>
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+    </EditForm>
 </div>
 
 

@@ -23,19 +23,16 @@
 
     private async Task AddItem(CreateItem createItem)
     {
-        //Validate
-        //Create Item
-        //Post Item
-        //Check reponse
-        //Add Item to UI
-        var item = new Item
-            {
-                Text = createItem.Text
-            };
+        if (createItem is null)
+        {
+            throw new ArgumentNullException(nameof(createItem));
+        }
+
+        var item = await ToDoClient.PostAsync(createItem);
+
+        if(item is null)
+            throw new ArgumentNullException(nameof(item));
 
         items.Add(item);
-
-
-
     }
 }
