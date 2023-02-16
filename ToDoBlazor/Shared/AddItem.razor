@@ -3,7 +3,7 @@
 <div class="border-bottom bg-white">
     <form id="todoForm" class="py-4 container">
         <div class="input-group input-group-lg">
-            <input @bind="text" type="text" class="form-control" id="todoInput" placeholder="Add todo..." autofocus>
+            <input @bind="createItem.Text" type="text" class="form-control" id="todoInput" placeholder="Add todo..." autofocus>
             <div class="input-group-append input-group-lg">
                 <button @onclick="OnAddToDoItems" @onclick:preventDefault="true" id="addItemBtn" class="btn btn-info">ADD</button>
             </div>
@@ -14,15 +14,15 @@
 
 
 @code {
-    public string text  = string.Empty;
+    private CreateItem createItem = new CreateItem();
 
     [Parameter]
-    public EventCallback<string> AddToDoItems { get; set; }
+    public EventCallback<CreateItem> AddToDoItems { get; set; }
 
     public async Task OnAddToDoItems()
     {
-        await AddToDoItems.InvokeAsync(text);
-        text = string.Empty;
+        await AddToDoItems.InvokeAsync(createItem);
+        createItem.Text = string.Empty;
     }
 
 

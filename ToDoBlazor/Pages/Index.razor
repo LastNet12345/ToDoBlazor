@@ -20,7 +20,7 @@
         items = (await ToDoClient.GetAsync()).ToList();
     }
 
-    private async Task AddItem(string text)
+    private async Task AddItem(CreateItem createItem)
     {
         //Validate
         //Create Item
@@ -29,7 +29,7 @@
         //Add Item to UI
         var item = new Item
             {
-                Text = text
+                Text = createItem.Text
             };
 
         items.Add(item);
