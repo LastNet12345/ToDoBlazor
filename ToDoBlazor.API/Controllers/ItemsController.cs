@@ -10,7 +10,7 @@ using ToDoBlazor.Shared.Entities;
 
 namespace ToDoBlazor.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/todos")]
     [ApiController]
     public class ItemsController : ControllerBase
     {
@@ -84,7 +84,7 @@ namespace ToDoBlazor.API.Controllers
         // POST: api/Items
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Item>> PostItem(Item item)
+        public async Task<ActionResult<Item>> PostItem(Item item) //Should change to createItem
         {
           if (_context.Item == null)
           {

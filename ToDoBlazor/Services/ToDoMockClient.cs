@@ -2,7 +2,7 @@
 
 namespace ToDoBlazor.Services
 {
-    public class ToDoMockClient : IToDoClient
+    public class ToDoMockClient //: IToDoClient
     {
         private readonly HttpClient httpClient;
 
