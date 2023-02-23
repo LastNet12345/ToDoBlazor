@@ -1,10 +1,13 @@
 using System.Net;
 using System.Text.Json;
 using Azure.Data.Tables;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using ToDoBlazor.Shared.Entities;
+using ToDoBlazor.TodoAPI.Entities;
 using ToDoBlazor.TodoAPI.Extensions;
 using ToDoBlazor.TodoAPI.Helpers;
 
@@ -19,7 +22,21 @@ namespace ToDoBlazor.TodoAPI
             _logger = loggerFactory.CreateLogger<ToDoFuncApi>();
         }
 
-        [Function("Add Item")]
+        [Function("Get Items")]
+        public async Task<HttpResponseData> Get(
+           [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "todos")] HttpRequestData req,
+           [TableInput(TableNames.TableName, TableNames.PartionKey, Connection = "AzureWebJobsStorage")] IEnumerable<ItemTableEntity> tableEntities)
+        {
+            _logger.LogInformation("Get all items started!");
+
+            var response = req.CreateResponse();
+            var items = tableEntities.Select(Mapper.ToItem);
+            await response.WriteAsJsonAsync(items);
+            return response;
+      
+        }
+
+            [Function("Add Item")]
         public async Task<HttpResponseData> Create(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "todos")] HttpRequestData req)
            // [TableInput("Items", "Todos", Connection = "AzureWebJobsStorage")] TableClient tableClient)
@@ -52,6 +69,36 @@ namespace ToDoBlazor.TodoAPI
             await response.WriteAsJsonAsync(item);
             response.StatusCode = HttpStatusCode.Created;
 
+            return response;
+        }   
+        
+        
+        [Function("Delete Item")]
+        public async Task<HttpResponseData> Delete(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "todos/{id}")] HttpRequestData req,
+             // [TableInput(TableNames.TableName, TableNames.PartionKey, "{id}", Connection = "AzureWebJobsStorage")] IEnumerable<ItemTableEntity> tableEntity,
+              [FromRoute] string id )
+        {
+            _logger.LogInformation("Delete item");
+           
+            var tableClient = GetTableClient();
+            var response = req.CreateResponse();
+
+            //if(createdItem is null || string.IsNullOrWhiteSpace(createdItem.Text))
+            //{
+            //    response.StatusCode = HttpStatusCode.BadRequest;
+            //    return response;
+            //}
+
+            var isOk = await tableClient.DeleteEntityAsync(TableNames.PartionKey, id);
+
+            if(isOk.Status == StatusCodes.Status404NotFound)
+            {
+                response.StatusCode = HttpStatusCode.NotFound;
+                return response;
+            }
+
+            response.StatusCode = HttpStatusCode.NoContent;
             return response;
         }
 
