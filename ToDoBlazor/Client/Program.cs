@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using ToDoBlazor;
 using ToDoBlazor.Services;
 
-namespace ToDoBlazor
+namespace ToDoBlazor.Client
 {
     public class Program
     {
