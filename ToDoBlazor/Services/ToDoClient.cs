@@ -11,8 +11,9 @@ namespace ToDoBlazor.Services
         public ToDoClient(HttpClient httpClient)
         {
             this.httpClient = httpClient;
-          //  this.httpClient.BaseAddress = new Uri("https://localhost:7149");
-            this.httpClient.BaseAddress = new Uri("https://todoblazorapi.azurewebsites.net");
+            //  this.httpClient.BaseAddress = new Uri("https://localhost:7149");
+            //this.httpClient.BaseAddress = new Uri("https://todoblazorapi.azurewebsites.net");
+            this.httpClient.BaseAddress = new Uri(" http://localhost:7007");
             this.httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
