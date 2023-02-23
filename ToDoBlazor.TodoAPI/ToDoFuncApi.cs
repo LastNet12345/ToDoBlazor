@@ -13,6 +13,10 @@ using ToDoBlazor.TodoAPI.Helpers;
 
 namespace ToDoBlazor.TodoAPI
 {
+    //Nuget so far!
+    //Microsoft.Azure.Functions.Worker.Extensions.Tables - Isolated!
+    //Azure.Data.Tables
+
     public class ToDoFuncApi
     {
         private readonly ILogger _logger;
