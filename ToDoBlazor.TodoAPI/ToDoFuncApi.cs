@@ -138,12 +138,54 @@ namespace ToDoBlazor.TodoAPI
             response.StatusCode = HttpStatusCode.NoContent;
             return response;
         }
+        //Microsoft.Azure.Functions.Worker.Extensions.Timer
+        //Microsoft.Azure.Functions.Worker.Extensions.Queue
+        //https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-timer?tabs=isolated-process&pivots=programming-language-csharp
+
+        [Function("Timer")]
+        [QueueOutput("DeletedItems", Connection = "AzureWebJobsStorage")]
+        public async Task<IEnumerable<ItemTableEntity>> Timer(
+          [TimerTrigger("0 */1 * * * *")] TimerInfo timerInfo,
+          FunctionContext context)
+        {
+
+            _logger.LogInformation($"Timer excecuted. Next timer schedule = {timerInfo.ScheduleStatus?.Next}");
+
+            var tableClient = GetTableClient();
+            var res = tableClient.QueryAsync<ItemTableEntity>(i => i.Completed == true);
+
+            var result = new List<ItemTableEntity>();
+            await foreach (var item in res)
+            {
+                await tableClient.DeleteEntityAsync(item.PartitionKey, item.RowKey);
+                result.Add(item);
+                _logger.LogInformation($"The {item.Text} is removed and added to the queue");
+            }
+
+            return result;
+
+        }
+
+        [Function("FromQueue")]
+        [BlobOutput("completed/{rand-guid}")]
+        public string FromQueue(
+           [QueueTrigger("DeletedItems", Connection = "AzureWebJobsStorage")] ItemTableEntity itemTable)
+        {
+            _logger.LogInformation($"C# Queue trigger function processed");
+
+            return $"Item: {itemTable.Text} was processed at: {DateTime.Now}.txt";
+
+        }
 
 
 
 
 
-        private TableClient GetTableClient()
+
+
+
+
+            private TableClient GetTableClient()
         {
             var connectionString = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
             return new TableClient(connectionString, TableNames.TableName);
