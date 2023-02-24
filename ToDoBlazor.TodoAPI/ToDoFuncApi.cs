@@ -106,6 +106,42 @@ namespace ToDoBlazor.TodoAPI
             return response;
         }
 
+        [Function("Edit Todos")]
+        public async Task<HttpResponseData> Edit(
+         [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "todos/{id}")] HttpRequestData req,
+         [FromRoute] string id)
+        {
+            _logger.LogInformation("Edit item");
+
+            var tableClient = GetTableClient();
+            var response = req.CreateResponse();
+
+            var editItem = await JsonSerializer.DeserializeAsync<Item>(req.Body, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+
+            if (editItem is null || string.IsNullOrWhiteSpace(editItem.Text) || editItem.Id != id)
+            {
+                response.StatusCode = HttpStatusCode.BadRequest;
+                return response;
+            }
+
+            var found = await tableClient.GetEntityIfExistsAsync<ItemTableEntity>(TableNames.PartionKey, id);
+            if (!found.HasValue)
+            {
+                response.StatusCode = HttpStatusCode.NotFound;
+                return response;
+            }
+
+            var reponse = await tableClient.UpdateEntityAsync((ItemTableEntity?)editItem.ToTableEntity(), Azure.ETag.All);
+
+            //ToDo check response!
+
+            response.StatusCode = HttpStatusCode.NoContent;
+            return response;
+        }
+
+
+
+
 
         private TableClient GetTableClient()
         {
